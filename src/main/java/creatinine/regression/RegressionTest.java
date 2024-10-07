@@ -16,6 +16,10 @@ public class RegressionTest {
 
     private static final int N = 16;
     private static final Random R = new Random();
+    private static String referenceId;
+    public RegressionTest(String  referenceId) {
+    this.referenceId = referenceId;
+    }
 
     public static XYDataset createDataset(double[] yData) {
         XYSeries series = new XYSeries("Data");
@@ -37,7 +41,7 @@ public class RegressionTest {
     }
 
     public static JFreeChart createChart(final XYDataset dataset) {
-        JFreeChart chart = ChartFactory.createScatterPlot("Test", "X", "Y",
+        JFreeChart chart = ChartFactory.createScatterPlot(" ID: "+referenceId, "X", "Y",
                 dataset, PlotOrientation.VERTICAL, true, false, false);
         XYPlot plot = chart.getXYPlot();
         XYLineAndShapeRenderer r = (XYLineAndShapeRenderer) plot.getRenderer();

@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class SparkDataRegression {
+    static int referenceId = 7356324;
     public static void main(String[] args) {
         // Initialize Spark session
         SparkSession spark = SparkSession.builder()
@@ -32,21 +33,21 @@ public class SparkDataRegression {
         Dataset<Row> df  = spark.read().format("csv")
                 .option("header", true)
                 .option("delimiter", ";")
-                .load("/home/ahmed/Desktop/gary/merged_56_files.csv");
+                .load("/home/ahmed/Desktop/gary/merged_56_files.csv");  // Can also load from relational DB
 
           df.createOrReplaceTempView("table ");
 
-        List<Row> rows_ =  spark.sql("SELECT " +
+        List<Row> rows =  spark.sql("SELECT " +
                 "`LIS Reference Datetime`," +
                 "`LIS Result: Numeric Result`" + " FROM table" +
-                " where `Reference Key` = 7219533" +
+                " where `Reference Key` = " + referenceId +
                 " order by `LIS Reference Datetime` asc").collectAsList();
 
-        String[] xData = new String[rows_.size()];
-        double[] yData = new double[rows_.size()];
+        String[] xData = new String[rows.size()];
+        double[] yData = new double[rows.size()];
 //
-        for (int i = 0; i < rows_.size(); i++) {
-            Row row = rows_.get(i);
+        for (int i = 0; i < rows.size(); i++) {
+            Row row = rows.get(i);
             xData[i] = row.getString(0); // Assuming first column is x-axis data
             yData[i] = Double.parseDouble(row.getString(1)); // Assuming second column is y-axis data
             System.out.println(  xData[i]+ " " + yData[i] );
@@ -55,7 +56,7 @@ public class SparkDataRegression {
         // Stop Spark session
         spark.stop();
 
-        RegressionTest rt = new RegressionTest();
+        RegressionTest rt = new RegressionTest( String.valueOf(referenceId));
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         XYDataset dataset = rt.createDataset(yData);
